@@ -1,0 +1,16 @@
+FROM    ora-deps
+USER    oracle
+RUN /home/oracle/database/runInstaller -silent -force -waitforcompletion -responsefile /home/oracle/responsefile_oracle12102.rsp -ignoresysprereqs -ignoreprereq
+USER    root
+RUN /u01/app/oraInventory/orainstRoot.sh
+RUN /u01/app/oracle/product/12.1.0.2/dbhome_1/root.sh -silent
+RUN rm -rf /home/oracle/responsefile_oracle12102.rsp /home/oracle/database
+USER    oracle
+WORKDIR /home/oracle
+RUN     mkdir -p /u01/app/oracle/data
+RUN     wget https://dl.dropboxusercontent.com/u/7787450/manage-oracle.sh
+RUN     chmod 700 /home/oracle/manage-oracle.sh
+#RUN     wget https://dl.dropboxusercontent.com/u/7787450/db_install.dbt
+RUN     cat oracle-user-env.txt >> .bashrc
+EXPOSE  1521
+CMD /home/oracle/manage-oracle.sh

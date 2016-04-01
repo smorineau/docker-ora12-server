@@ -1,0 +1,5 @@
+
+export ORACLE_HOME=/u01/app/oracle/product/12.1.0.2/dbhome_1
+export ORACLE_SID=$(hostname)
+export PATH=$PATH:$ORACLE_HOME/bin
+

@@ -1,0 +1,31 @@
+FROM    oraclelinux:6
+RUN groupadd -g 54321 oinstall
+RUN groupadd -g 54322 dba
+RUN useradd -m -g oinstall -G oinstall,dba -u 54321 oracle
+RUN yum -y install oracle-rdbms-server-12cR1-preinstall perl wget unzip
+RUN mkdir /u01
+RUN chown oracle:oinstall /u01
+USER oracle
+WORKDIR /home/oracle
+#ENV mosUser=user@mail.com mosPass=password DownList=1,2
+#RUN wget https://dl.dropboxusercontent.com/u/7787450/getMOSPatch.sh
+RUN wget https://dl.dropboxusercontent.com/u/7787450/responsefile_oracle12102.rsp
+##RUN echo "226P;Linux x86-64" > /home/oracle/.getMOSPatch.sh.cfg
+##RUN sh /home/oracle/getMOSPatch.sh patch=17694377
+COPY linuxamd64_12102_database_1of2.zip .
+COPY linuxamd64_12102_database_2of2.zip .
+COPY db_install.dbt .
+COPY utplsql-2-3-0.zip .
+COPY oracle-user-env.txt .
+COPY create-utp-user.sql .
+COPY install-utp.sh .
+COPY linuxamd64_12102_examples.zip .
+USER root
+RUN chown oracle:oinstall *
+USER oracle
+RUN chmod 700 install-utp.sh
+RUN unzip linuxamd64_12102_database_1of2.zip
+RUN unzip linuxamd64_12102_database_2of2.zip
+RUN rm linuxamd64_12102_database_1of2.zip linuxamd64_12102_database_2of2.zip
+RUN unzip linuxamd64_12102_examples.zip
+RUN rm linuxamd64_12102_examples.zip
